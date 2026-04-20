@@ -1,17 +1,19 @@
 import 'dart:convert';
 
+import 'package:auth_api_integration/models/add_user_model.dart';
+import 'package:auth_api_integration/models/sign_in_user_model.dart';
 import 'package:auth_api_integration/res/app_url.dart';
-import 'package:http/http.dart' hide Response;
+import 'package:http/http.dart' as http;
 
 class AuthRepository {
-  static Future<dynamic> register(Map<String, dynamic> body) async {
-    final url = Uri.parse(AppUrl.register);
+  static Future<dynamic> signUp(AddUserModel body) async {
+    final url = Uri.parse(AppUrl.signUp);
 
     try {
-      final response = await post(
+      final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(body),
+        body: jsonEncode(body.toJson()),
       );
 
       final data = jsonDecode(response.body);
@@ -19,36 +21,35 @@ class AuthRepository {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return data;
       } else {
-        throw Exception("Registration failed");
+        throw Exception("Network Error");
       }
     } catch (e) {
-      throw Exception("Network error: $e");
+      throw Exception(e);
     }
   }
 
-  static Future<dynamic> signIn(Map<String, dynamic> body) async {
-    final url = Uri.parse(AppUrl.login);
+  static Future<dynamic> signIn(SignInUserModel body) async {
+    final url = Uri.parse(AppUrl.signIn);
 
     try {
-      final response = await post(
+      final response = await http.post(
         url,
-        headers: {"Content-Type": 'application/json'},
+        headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "username": "emilys",
           "password": "emilyspass",
-        }), // I would replace it with body
+          "expiresInMins": 30,
+        }),
       );
 
       final data = jsonDecode(response.body);
-
       if (response.statusCode == 200) {
         return data;
       } else {
-        print(response.statusCode);
-        throw Exception("Sign In failed");
+        throw Exception("Network Error");
       }
     } catch (e) {
-      throw Exception("Network Error: $e");
+      throw Exception(e);
     }
   }
 }

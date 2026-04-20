@@ -1,5 +1,5 @@
-import 'package:auth_api_integration/view_model/auth/auth_view_model.dart';
-import 'package:auth_api_integration/view_model/btm_nav_bar/account/account_screen.dart';
+import 'package:auth_api_integration/view_model/btm_nav_bar/btm_nav_bar_view_model.dart';
+import 'package:auth_api_integration/view_model/btm_nav_bar/home/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,27 +11,19 @@ class BtmNavBarScreen extends StatefulWidget {
 }
 
 class _BtmNavBarScreenState extends State<BtmNavBarScreen> {
-  int _currentIndex = 0;
-
-  final List<Widget> _screens = const [
-    Center(child: Text("Home")),
-    Center(child: Text("Search")),
-    Center(child: Text("Orders")),
-    AccountScreen(),
-  ];
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AuthViewModel>().loadUser();
+      context.read<HomeViewModel>().getAllProducts();
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.watch<BtmNavBarViewModel>();
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: vm.screens[vm.currentIndex],
 
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -46,10 +38,10 @@ class _BtmNavBarScreenState extends State<BtmNavBarScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(Icons.home, "Home", 0),
-                _buildNavItem(Icons.search, "Search", 1),
-                _buildNavItem(Icons.receipt_long, "Orders", 2),
-                _buildNavItem(Icons.person, "Account", 3),
+                _buildNavItem(Icons.home, "Home", 0, vm),
+                _buildNavItem(Icons.search, "Search", 1, vm),
+                _buildNavItem(Icons.receipt_long, "Orders", 2, vm),
+                _buildNavItem(Icons.person, "Account", 3, vm),
               ],
             ),
           ),
@@ -58,12 +50,17 @@ class _BtmNavBarScreenState extends State<BtmNavBarScreen> {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, int index) {
-    final bool isActive = _currentIndex == index;
+  Widget _buildNavItem(
+    IconData icon,
+    String label,
+    int index,
+    BtmNavBarViewModel vm,
+  ) {
+    final bool isActive = vm.currentIndex == index;
 
     return GestureDetector(
       onTap: () {
-        setState(() => _currentIndex = index);
+        vm.setIndex(index);
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),

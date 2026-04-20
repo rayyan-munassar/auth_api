@@ -1,9 +1,9 @@
+import 'package:auth_api_integration/models/add_user_model.dart';
 import 'package:auth_api_integration/repository/auth/auth_repository.dart';
 import 'package:auth_api_integration/res/utils/custom_snack_bar.dart';
-import 'package:auth_api_integration/res/validations/auth_validator.dart';
+import 'package:auth_api_integration/res/validations/auth_validation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 
 class SignUpViewModel extends ChangeNotifier {
   final TextEditingController usernameCtl = TextEditingController();
@@ -14,8 +14,8 @@ class SignUpViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  void _setLoading(bool value) {
-    _isLoading = value;
+  void setLoading(bool v) {
+    _isLoading = v;
     notifyListeners();
   }
 
@@ -26,43 +26,6 @@ class SignUpViewModel extends ChangeNotifier {
     confirmPassCtl.clear();
   }
 
-  void signUp(BuildContext context) async {
-    final error = AuthValidator.signUpValidation(
-      username: usernameCtl.text,
-      email: emailCtl.text,
-      pass: passCtl.text,
-      confirmPass: confirmPassCtl.text,
-    );
-
-    if (error != null) {
-      CustomSnackBar.showError(message: error, icon: Icons.info_rounded);
-      return;
-    }
-    final String id = Uuid().v4();
-    final body = {
-      "id": id,
-      "username": usernameCtl.text,
-      "email": emailCtl.text,
-      "password": passCtl.text,
-    };
-
-    try {
-      _setLoading(true);
-      final response = await AuthRepository.register(body);
-      clear();
-      Get.back();
-      CustomSnackBar.showSuccess(
-        message: "User created: ${response["username"]}",
-        icon: Icons.check,
-      );
-    } catch (e) {
-      CustomSnackBar.showError(message: e.toString(), icon: Icons.info_rounded);
-      throw Exception(e);
-    } finally {
-      _setLoading(false);
-    }
-  }
-
   @override
   void dispose() {
     usernameCtl.dispose();
@@ -70,5 +33,38 @@ class SignUpViewModel extends ChangeNotifier {
     passCtl.dispose();
     confirmPassCtl.dispose();
     super.dispose();
+  }
+
+  void signUp() async {
+    String? error = AuthValidation.signUpValidation(
+      username: usernameCtl.text,
+      email: emailCtl.text,
+      pass: passCtl.text,
+      confirmPass: confirmPassCtl.text,
+    );
+
+    if (error != null) {
+      CustomSnackBar.showError(message: error, icon: Icons.error);
+      return;
+    }
+    try {
+      setLoading(true);
+      AddUserModel body = AddUserModel(
+        username: usernameCtl.text,
+        email: emailCtl.text,
+        password: passCtl.text,
+      );
+      final response = await AuthRepository.signUp(body);
+      clear();
+      Get.back();
+      CustomSnackBar.showSuccess(
+        message: "Account was created: ${response["username"]}",
+        icon: Icons.check,
+      );
+    } catch (e) {
+      throw Exception(e);
+    } finally {
+      setLoading(false);
+    }
   }
 }

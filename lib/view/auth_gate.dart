@@ -15,22 +15,22 @@ class _AuthGateState extends State<AuthGate> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AuthViewModel>().loadUser();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final authVM = context.watch<AuthViewModel>();
-
-    if (authVM.isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    final vm = context.watch<AuthViewModel>();
+    if (vm.isLoading) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    if (authVM.isLoggedIn) {
-      return const BtmNavBarScreen();
+    if (vm.user == null) {
+      return SignInScreen();
     } else {
-      return const SignInScreen();
+      return BtmNavBarScreen();
     }
   }
 }

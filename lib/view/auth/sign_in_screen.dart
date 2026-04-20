@@ -68,12 +68,16 @@ class SignInScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Sign In Button
-              PrimaryBtn(
-                title: "Sing In",
-                onTap: () {
-                  vm.signIn();
-                },
-              ),
+              vm.isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(color: Colors.black),
+                    )
+                  : PrimaryBtn(
+                      title: "Sing In",
+                      onTap: () {
+                        vm.signIn(context);
+                      },
+                    ),
 
               const Spacer(),
 

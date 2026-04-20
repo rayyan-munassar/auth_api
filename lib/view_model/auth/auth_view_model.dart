@@ -9,22 +9,26 @@ class AuthViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  void setLoading(bool value) {
-    _isLoading = value;
+  void setLoading(bool val) {
+    _isLoading = val;
     notifyListeners();
   }
 
-  bool get isLoggedIn => _user != null;
-
-  Future<void> loadUser() async {
+  void loadUser() {
     setLoading(true);
     _user = AuthLocal.user;
     setLoading(false);
   }
 
-  void logout() {
+  void login() {
+    _user = AuthLocal.user;
+    notifyListeners();
+  }
+
+  void signOut() {
     AuthLocal.clear();
     _user = null;
+
     notifyListeners();
   }
 }

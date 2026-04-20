@@ -16,6 +16,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<SignUpViewModel>();
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -25,7 +26,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             padding: EdgeInsets.only(
               left: 24,
               right: 24,
-              bottom: MediaQuery.of(context).viewInsets.bottom, // 🔥 KEY FIX
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,11 +95,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 // Sign Up Button
                 vm.isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? Center(
+                        child: CircularProgressIndicator(color: Colors.black),
+                      )
                     : PrimaryBtn(
                         title: "Sign Up",
                         onTap: () {
-                          vm.signUp(context);
+                          vm.signUp();
                         },
                       ),
 

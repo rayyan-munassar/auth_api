@@ -1,15 +1,15 @@
 import 'package:get/get.dart';
 
-class AuthValidator {
+class AuthValidation {
   static String? signUpValidation({
     required String username,
     required String email,
     required String pass,
     required String confirmPass,
   }) {
-    if (username.trim().isEmpty) {
+    if (username.isEmpty) {
       return "Username is required";
-    } else if (email.trim().isEmpty) {
+    } else if (email.isEmpty) {
       return "Email is required";
     } else if (!GetUtils.isEmail(email)) {
       return "Enter valid email";
@@ -18,21 +18,22 @@ class AuthValidator {
     } else if (confirmPass.isEmpty) {
       return "Confirm password is required";
     } else if (pass != confirmPass) {
-      return "Confirm password and password should match";
+      return "Password and confirm password should match";
+    } else {
+      return null;
     }
-
-    return null;
   }
 
-  static String? signInValidator({
+  static String? signInValidation({
     required String username,
-    required String password,
+    required String pass,
   }) {
-    if (username.trim().isEmpty) {
-      return "Enter your username";
-    } else if (password.trim().isEmpty) {
-      return "Enter your password";
+    if (username.isEmpty) {
+      return "Username is required";
+    } else if (pass.isEmpty) {
+      return "pass is required";
+    } else {
+      return null;
     }
-    return null;
   }
 }

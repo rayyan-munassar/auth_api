@@ -4,7 +4,9 @@ import 'package:auth_api_integration/view/auth_gate.dart';
 import 'package:auth_api_integration/view_model/auth/auth_view_model.dart';
 import 'package:auth_api_integration/view_model/auth/sign_in_view_model.dart';
 import 'package:auth_api_integration/view_model/auth/sign_up_view_model.dart';
+import 'package:auth_api_integration/view_model/btm_nav_bar/account/account_view_model.dart';
 import 'package:auth_api_integration/view_model/btm_nav_bar/btm_nav_bar_view_model.dart';
+import 'package:auth_api_integration/view_model/btm_nav_bar/home/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -18,10 +20,12 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SignUpViewModel()),
-        ChangeNotifierProvider(create: (_) => SignInViewModel()),
-        ChangeNotifierProvider(create: (_) => BtmNavBarViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => BtmNavBarViewModel()),
+        ChangeNotifierProvider(create: (_) => SignInViewModel()),
+        ChangeNotifierProvider(create: (_) => SignUpViewModel()),
+        ChangeNotifierProvider(create: (_) => AccountViewModel()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
       ],
       child: const MyApp(),
     ),
@@ -36,7 +40,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter & API',
       theme: Themes.themeData,
-      home: const AuthGate(),
+      debugShowCheckedModeBanner: false,
+      home: AuthGate(),
       getPages: AppRoutes.pages,
     );
   }
